@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <title>Download</title>
+    </head>
+
+    <body>
+
+       
+<nav class="navbar navbar-dark" style="background-color: #9C0606;">
+    <a class="navbar-brand" href="/">
+      <img src="{{url_for('static',filename='icon.png')}}" width="30" height="30" class="d-inline-block align-top" alt="icon">
+      Home
+    </a>
+  </nav>
+
+        <div class="container">
+            <div class="row">
+                <div class="col mt-5 pb-5">
+                    <div class="col mt-4 ml-5 pl-5">
+                        <img src={{url.thumbnail_url}} class="img-rounded" style="max-width:70%" alt="Video thumbnail">
+                    </div>
+                    <div class="col mt-4 ml-5 pl-5" style="max-width:75%">
+                        <table class="table table-striped">
+                            <tr>
+                                <th><button class="btn btn-outline-danger btn" onclick="myFunction()" >MP4</button></th>
+                                <td><button class="btn btn-outline-danger"  onclick="myFunction2()">MP3</button></td>
+                            </tr>
+                        </table>
+                    </div>
+                        <div class="col mt-4 ml-5 pl-5" style="max-width:75%" id="tbl1">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Title</th>
+                                        <td>{{url.title}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Video Quality</th>
+                                        <td>
+                                            <form action="{{url_for("download")}}" method="post">
+                                            <select name = "itag" class="form-select" aria-label="Default select example">
+                                                {% for i in url.streams.filter(progressive=True) %}
+                                                <option value="{{i.itag}}">{{i.resolution}}</option>
+                                                {% endfor %}
+                                                </select></td>
+                                            
+                                    </tr>
+                                    
+                                </tbody>
+
+
+                            </table>
+                            <div class="col">
+                                <a href="/">
+                                <button class="btn btn-success ml-4" type="submit" id = "download_btn">Download</button>
+                                <button class="btn btn-success ml-4" type="button" style="display: none" id = "loading_btn" disabled>
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Downloading...
+                                  </button></a>
+                                            
+                            </div></form>
+
+                        </div>
+                        <div class="col mt-4 ml-5 pl-5" style="max-width:75%; display: none;" id="tbl2">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Title</th>
+                                        <td>{{url.title}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Audio Quality</th>
+                                        <td>
+                                            <form action="{{url_for("audio_download")}}" method="post">
+                                            <select name = "itag" class="form-select" aria-label="Default select example">
+                                                {% for i in url.streams.filter(only_audio=True).order_by('abr').desc() %}
+                                                <option value="{{i.itag}}">{{i.abr}}</option>
+                                                {% endfor %}
+                                                </select></td>
+                                            
+                                    </tr>
+                                    
+                                </tbody>
+
+
+                            </table>
+                            <div class="col">
+                                <a href="/">
+                                <button class="btn btn-success ml-4" type="submit" id = "download_btn">Download</button>
+                                <button class="btn btn-success ml-4" type="button" style="display: none" id = "loading_btn" disabled>
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Downloading...
+                                  </button></a>
+                                            
+                            </div></form>
+
+                        </div>
+                
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-secondary" style="position:relative;
+    bottom:0;
+    width:100%;
+    height:35px;
+    text-align: center;">
+      <a class="navbar-brand" href="https://www.instagram.com/its_amanulla/" style="color:white;">
+        <h6>About Me</h6>
+      </a>
+    </footer>
+    
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+            <script>
+                $(document).ready(function(){
+                  $('#download_btn').on('click', function(){
+                    $('#download_btn').hide();
+                    $('#loading_btn').show();
+                  })
+                })
+              </script>
+              <script>
+                var a = document.getElementById("tbl1");
+                var b = document.getElementById("tbl2");
+              
+                function myFunction() {
+                  a.style.display = "block";
+                  b.style.display = "none";
+                }
+              
+                function myFunction2() {
+                  a.style.display = "none";
+                  b.style.display = "block";
+                }
+              </script> 
+    </body>
+
+</html>
